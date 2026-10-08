@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4
+
+- The "Open GitLens" output channel now traces what each history command does (file found, commits found, selection, diff opened).
+- Commands act on a visible file editor when the active editor is the Output panel or a webview.
+- `Diagnose` no longer loses the active file when it opens the output panel.
+
 ## 0.2.3
 
 - Fix: commands could appear to do nothing when `git` is a wrapper/proxy that leaves background processes holding the output pipe open. Git calls now complete when the process exits, with a configurable timeout (`openGitLens.gitTimeoutSeconds`).

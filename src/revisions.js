@@ -3,13 +3,13 @@ const vscode = require('vscode');
 
 const git = require('./git');
 const { openRevisionsDiff, SCHEME } = require('./history');
-const { guarded } = require('./repo');
+const { fileEditor, guarded } = require('./repo');
 
 const RECORD = '\x1e';
 
 /** Identifies the file shown in the active editor, either on disk or at a revision. */
 async function resolveActive() {
-    const editor = vscode.window.activeTextEditor;
+    const editor = fileEditor(['file', SCHEME]);
     if (!editor) {
         throw new Error('Open a file first.');
     }

@@ -77,4 +77,17 @@ async function confirm(message, action) {
     return (await vscode.window.showWarningMessage(message, { modal: true }, action)) === action;
 }
 
-module.exports = { getRoot, runAction, guarded, confirm, onDidChangeRepo, notifyChanged, getOutput, log, quickPick, inputBox, withLoading };
+/**
+ * The editor to act on: the active one if it is a real file, otherwise any visible file editor.
+ * The Output panel and webviews count as "active editors" and would otherwise hide the user's file.
+ */
+function fileEditor(schemes = ['file']) {
+    const active = vscode.window.activeTextEditor;
+    if (active && schemes.includes(active.document.uri.scheme)) {
+        return active;
+    }
+    return vscode.window.visibleTextEditors.find(editor => schemes.includes(editor.document.uri.scheme));
+}
+
+module.exports = {
+    fileEditor, getRoot, runAction, guarded, confirm, onDidChangeRepo, notifyChanged, getOutput, log, quickPick, inputBox, withLoading };

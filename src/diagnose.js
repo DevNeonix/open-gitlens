@@ -2,7 +2,7 @@ const path = require('node:path');
 const vscode = require('vscode');
 
 const git = require('./git');
-const { getOutput, guarded, log } = require('./repo');
+const { fileEditor, getOutput, guarded, log } = require('./repo');
 
 const SAMPLE_LIMIT = 5;
 
@@ -19,6 +19,7 @@ async function timed(label, task) {
 
 /** Writes an environment and git health report for the active file to the output channel. */
 async function diagnose() {
+    const editor = fileEditor();
     const output = getOutput();
     output.show(true);
     const extension = vscode.extensions.getExtension('devneonix.open-gitlens');
@@ -31,8 +32,7 @@ async function diagnose() {
     await timed(`${finder} git`, () => git.runProcess(finder, ['git'], { env: process.env, timeout: 10_000, label: `${finder} git` }));
     await timed('git --version', () => git.exec(process.cwd(), ['--version']));
 
-    const editor = vscode.window.activeTextEditor;
-    if (editor?.document.uri.scheme !== 'file') {
+    if (!editor) {
         log('Open a file from your repository and run this command again to test file history.');
         return;
     }

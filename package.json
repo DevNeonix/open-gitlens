@@ -2,7 +2,7 @@
     "name": "open-gitlens",
     "displayName": "Open GitLens",
     "description": "Free Git supercharger for VS Code: commit graph, line blame, file history, worktrees, compare and more. No account, runs locally.",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "publisher": "devneonix",
     "license": "MIT",
     "icon": "resources/icon.png",

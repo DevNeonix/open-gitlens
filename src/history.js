@@ -2,7 +2,7 @@ const path = require('node:path');
 const vscode = require('vscode');
 
 const git = require('./git');
-const { guarded, quickPick, withLoading } = require('./repo');
+const { fileEditor, guarded, log, quickPick, withLoading } = require('./repo');
 const { fromNow } = require('./time');
 
 const SCHEME = 'open-git-lens';
@@ -32,6 +32,7 @@ async function openRevisionsDiff({ root, left, leftFile, right, rightFile, title
 
 /** Opens the diff of a commit against its parent for a file. */
 async function openCommitDiff({ filePath, root, sha, file, oldFile }) {
+    log(`opening diff of ${sha.slice(0, 8)} for ${file ?? filePath}`);
     const resolved = root ? { root, relativePath: file } : await git.getRelativePath(filePath);
     const target = file ?? resolved.relativePath;
     const parent = await git.getParentSha(resolved.root, sha);
@@ -46,6 +47,7 @@ async function openCommitDiff({ filePath, root, sha, file, oldFile }) {
 }
 
 async function pickCommit(commits, placeHolder, filePath) {
+    log(`${placeHolder}: ${commits.length} commit(s) found`);
     if (commits.length === 0) {
         vscode.window.showInformationMessage('Open GitLens: no history found.');
         return;
@@ -59,14 +61,16 @@ async function pickCommit(commits, placeHolder, filePath) {
         })),
         { placeHolder, matchOnDescription: true, matchOnDetail: true },
     );
+    log(picked ? `picked ${picked.commit.sha.slice(0, 8)}` : 'quick pick closed without choosing');
     if (picked) {
         await openCommitDiff({ filePath, sha: picked.commit.sha, file: picked.commit.file });
     }
 }
 
 function activeFile() {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor || editor.document.uri.scheme !== 'file') {
+    const editor = fileEditor();
+    if (!editor) {
+        log('no file editor available (active editor is not a file and none is visible)');
         vscode.window.showInformationMessage('Open GitLens: open a file first.');
         return;
     }
@@ -78,6 +82,7 @@ function register(context) {
         vscode.workspace.registerTextDocumentContentProvider(SCHEME, contentProvider),
         vscode.commands.registerCommand('openGitLens.openCommitDiff', args => guarded(() => openCommitDiff(args))),
         vscode.commands.registerCommand('openGitLens.showFileHistory', () => guarded(async () => {
+            log('command: Show File History');
             const editor = activeFile();
             if (!editor) {
                 return;
@@ -86,12 +91,14 @@ function register(context) {
             await pickCommit(await withLoading('loading file history…', () => git.fileHistory(filePath)), `History of ${path.basename(filePath)}`, filePath);
         })),
         vscode.commands.registerCommand('openGitLens.showRangeHistory', ({ filePath, start, end }) => guarded(async () => {
+            log(`range history ${filePath} lines ${start}-${end}`);
             await pickCommit(await withLoading('loading line history…', () => git.lineHistory(filePath, start, end)), `History of lines ${start}-${end}`, filePath);
         })),
         vscode.commands.registerCommand('openGitLens.showFileHistoryOf', filePath => guarded(async () => {
             await pickCommit(await withLoading('loading file history…', () => git.fileHistory(filePath)), `History of ${path.basename(filePath)}`, filePath);
         })),
         vscode.commands.registerCommand('openGitLens.showLineHistory', () => guarded(async () => {
+            log('command: Show Line History');
             const editor = activeFile();
             if (!editor) {
                 return;

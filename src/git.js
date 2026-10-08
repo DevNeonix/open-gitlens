@@ -201,10 +201,18 @@ async function getParentSha(root, sha) {
     }
 }
 
-/** Path of the file relative to the repo root. */
+/**
+ * Path of the file relative to the repo root.
+ * Asks git for the directory prefix instead of subtracting paths, which breaks with
+ * Windows 8.3 short names, symlinks (/tmp vs /private/tmp) and drive-letter casing.
+ */
 async function getRelativePath(filePath) {
-    const root = await getRepoRoot(path.dirname(filePath));
-    return { root, relativePath: path.relative(root, filePath).split(path.sep).join('/') };
+    const directory = path.dirname(filePath);
+    const [root, prefix] = await Promise.all([
+        getRepoRoot(directory),
+        runGit(['rev-parse', '--show-prefix'], directory),
+    ]);
+    return { root, relativePath: `${prefix.trim()}${path.basename(filePath)}` };
 }
 
 /** Web URL of a commit for GitHub/GitLab/Bitbucket-style remotes. */

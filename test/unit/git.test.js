@@ -22,6 +22,17 @@ describe('git layer', () => {
         assert.equal(path.resolve(resolved.root), path.resolve(root));
     });
 
+    it('resolves relative paths even when the file path is spelled differently (symlinks)', { skip: process.platform === 'win32' }, async () => {
+        const link = `${root}-link`;
+        fs.symlinkSync(root, link, 'dir');
+        try {
+            const resolved = await lib.getRelativePath(path.join(link, 'src', 'main.txt'));
+            assert.equal(resolved.relativePath, 'src/main.txt');
+        } finally {
+            fs.unlinkSync(link);
+        }
+    });
+
     it('follows renames in file history', async () => {
         const history = await lib.fileHistory(path.join(root, 'src', 'main.txt'));
         assert.deepEqual(history.map(commit => commit.summary), ['fix: add third line', 'refactor: rename app to main', 'feat: add second line and unicode file', 'feat: first version']);

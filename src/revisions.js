@@ -40,7 +40,7 @@ async function diffWithPrevious() {
     const { root, rev, relativePath } = await resolveActive();
     const commits = await touching(root, rev, relativePath, 2);
     if (commits.length === 0) {
-        vscode.window.showInformationMessage('Open Git Lens: this file has no history yet.');
+        vscode.window.showInformationMessage('Open GitLens: this file has no history yet.');
         return;
     }
     const [current, previous] = commits;
@@ -50,14 +50,14 @@ async function diffWithPrevious() {
     } else if (previous) {
         await openRevisionsDiff({ root, left: previous.sha, leftFile: previous.file, right: current.sha, rightFile: current.file, title: `${name} (${short(previous.sha)} ↔ ${short(current.sha)})` });
     } else {
-        vscode.window.showInformationMessage('Open Git Lens: this is the first revision of the file.');
+        vscode.window.showInformationMessage('Open GitLens: this is the first revision of the file.');
     }
 }
 
 async function diffWithNext() {
     const { root, rev, relativePath } = await resolveActive();
     if (!rev) {
-        vscode.window.showInformationMessage('Open Git Lens: the working file has no next revision.');
+        vscode.window.showInformationMessage('Open GitLens: the working file has no next revision.');
         return;
     }
     const current = (await touching(root, rev, relativePath, 1))[0];
@@ -74,7 +74,7 @@ async function diffWithNext() {
 async function diffWithWorking() {
     const { root, rev, relativePath } = await resolveActive();
     if (!rev) {
-        vscode.window.showInformationMessage('Open Git Lens: you are already viewing the working file.');
+        vscode.window.showInformationMessage('Open GitLens: you are already viewing the working file.');
         return;
     }
     await openRevisionsDiff({ root, left: rev, leftFile: relativePath, right: undefined, rightFile: relativePath, title: `${path.basename(relativePath)} (${short(rev)} ↔ working tree)` });

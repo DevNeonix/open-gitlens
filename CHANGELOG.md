@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Rename display name to "Open GitLens".
+
 ## 0.2.0
 
 - Commit Graph: columns (branch/tag, graph, message, author with avatar, date, sha, changes), minimap, search with prefixes, filters, hide refs, details panel (list/tree).

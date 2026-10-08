@@ -184,7 +184,7 @@ async function createWorktree() {
 
 async function removeWorktree(worktree) {
     if (worktree.main) {
-        vscode.window.showWarningMessage('Open Git Lens: the main worktree cannot be removed.');
+        vscode.window.showWarningMessage('Open GitLens: the main worktree cannot be removed.');
         return;
     }
     if (!(await confirm(`Remove worktree ${worktree.path}?`, 'Remove'))) {
@@ -199,7 +199,7 @@ async function removeWorktree(worktree) {
 async function showStash({ data }) {
     const files = await git.commitFiles(data.root, data.sha);
     if (files.length === 0) {
-        vscode.window.showInformationMessage('Open Git Lens: this stash has no tracked file changes.');
+        vscode.window.showInformationMessage('Open GitLens: this stash has no tracked file changes.');
         return;
     }
     const picked = await vscode.window.showQuickPick(

@@ -1,4 +1,4 @@
-# Open Git Lens
+# Open GitLens
 
 Free, local-only GitLens-style Git tooling for VS Code. Plain JS, no build step, uses the `git` CLI.
 
@@ -20,7 +20,7 @@ Free, local-only GitLens-style Git tooling for VS Code. Plain JS, no build step,
 | Line blame, status bar blame, hovers (Changes / Copy SHA / Open on remote / Blame previous) | automatic |
 | File blame (age-colored gutter) | `Alt+B` |
 | Git CodeLens (latest author, author count) | `Shift+Alt+B` to toggle |
-| Compare file with branch, tag or commit; between two revisions; open file at revision | right click > Open Git Lens, or `Cmd+Alt+G C` |
+| Compare file with branch, tag or commit; between two revisions; open file at revision | right click > Open GitLens, or `Cmd+Alt+G C` |
 | Revision navigation: previous / next / working file | `Alt+,` / `Alt+.`, or the arrows in the diff title |
 | File and line/range history | `Cmd+Alt+G H` |
 

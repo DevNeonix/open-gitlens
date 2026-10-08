@@ -1,8 +1,8 @@
 {
     "name": "open-git-lens",
-    "displayName": "Open Git Lens",
+    "displayName": "Open GitLens",
     "description": "Free Git supercharger for VS Code: commit graph, line blame, file history, worktrees, compare and more. No account, runs locally.",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "publisher": "devneonix",
     "license": "MIT",
     "icon": "resources/icon.png",
@@ -49,242 +49,242 @@
             {
                 "command": "openGitLens.toggleLineBlame",
                 "title": "Toggle Line Blame",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.toggleFileBlame",
                 "title": "Toggle File Blame",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.showFileHistory",
                 "title": "Show File History",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.showLineHistory",
                 "title": "Show Line History",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.showGraph",
                 "title": "Show Commit Graph",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(git-merge)"
             },
             {
                 "command": "openGitLens.showRangeHistory",
                 "title": "Show Range History",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.compareWithRef",
                 "title": "Compare Working Tree with…",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(git-compare)"
             },
             {
                 "command": "openGitLens.blamePreviousRevision",
                 "title": "Blame Previous Revision",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.fetch",
                 "title": "Fetch All",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(cloud-download)"
             },
             {
                 "command": "openGitLens.refresh",
                 "title": "Refresh Views",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(refresh)"
             },
             {
                 "command": "openGitLens.stash.push",
                 "title": "Stash Changes…",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(add)"
             },
             {
                 "command": "openGitLens.branch.checkout",
                 "title": "Checkout",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.branch.createFrom",
                 "title": "Create Branch From…",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.branch.compare",
                 "title": "Compare with Working Tree",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.branch.merge",
                 "title": "Merge into Current Branch",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.branch.delete",
                 "title": "Delete Branch",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.branch.copyName",
                 "title": "Copy Branch Name",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.tag.checkout",
                 "title": "Checkout Tag",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.tag.compare",
                 "title": "Compare Tag with Working Tree",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.tag.delete",
                 "title": "Delete Tag",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.tag.copyName",
                 "title": "Copy Tag Name",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.stash.show",
                 "title": "Show Stash",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.stash.apply",
                 "title": "Apply Stash",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.stash.pop",
                 "title": "Pop Stash",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.stash.drop",
                 "title": "Drop Stash",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.openCommitDiff",
                 "title": "Open Commit Diff",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.openRevisionsDiff",
                 "title": "Open Revisions Diff",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.copySha",
                 "title": "Copy SHA",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.openCommitOnRemote",
                 "title": "Open Commit on Remote",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.compareFileWithRef",
                 "title": "Compare File with Branch, Tag or Commit…",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(git-compare)"
             },
             {
                 "command": "openGitLens.compareFileWithPrevious",
                 "title": "Compare File with Last Commit",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.compareFileBetweenRefs",
                 "title": "Compare File Between Two Revisions…",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.openFileAtRevision",
                 "title": "Open File at Revision…",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.showFileHistoryOf",
                 "title": "Show File History (path)",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.worktree.create",
                 "title": "Create Worktree…",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(add)"
             },
             {
                 "command": "openGitLens.worktree.open",
                 "title": "Open Worktree in New Window",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.worktree.openHere",
                 "title": "Open Worktree in This Window",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.worktree.remove",
                 "title": "Remove Worktree…",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.worktree.copyPath",
                 "title": "Copy Worktree Path",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.worktree.graph",
                 "title": "Show Worktree Branch in Graph",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             },
             {
                 "command": "openGitLens.diffWithPrevious",
                 "title": "Open Changes with Previous Revision",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(arrow-left)"
             },
             {
                 "command": "openGitLens.diffWithNext",
                 "title": "Open Changes with Next Revision",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(arrow-right)"
             },
             {
                 "command": "openGitLens.diffWithWorking",
                 "title": "Open Changes with Working File",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(diff)"
             },
             {
                 "command": "openGitLens.openWorkingFile",
                 "title": "Open Working File",
-                "category": "Open Git Lens",
+                "category": "Open GitLens",
                 "icon": "$(go-to-file)"
             },
             {
                 "command": "openGitLens.toggleCodeLens",
                 "title": "Toggle Git CodeLens",
-                "category": "Open Git Lens"
+                "category": "Open GitLens"
             }
         ],
         "configuration": {
-            "title": "Open Git Lens",
+            "title": "Open GitLens",
             "properties": {
                 "openGitLens.lineBlame.enabled": {
                     "type": "boolean",
@@ -637,7 +637,7 @@
         "submenus": [
             {
                 "id": "openGitLens.menu",
-                "label": "Open Git Lens"
+                "label": "Open GitLens"
             }
         ],
         "keybindings": [
@@ -689,7 +689,7 @@
             "activitybar": [
                 {
                     "id": "openGitLens",
-                    "title": "Open Git Lens",
+                    "title": "Open GitLens",
                     "icon": "resources/icon.svg"
                 }
             ]

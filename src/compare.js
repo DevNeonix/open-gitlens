@@ -143,7 +143,7 @@ async function compareFileWithPrevious(arg) {
     const { filePath, root, relativePath } = await resolveFile(arg);
     const [latest] = await git.fileHistory(filePath, 1);
     if (!latest) {
-        vscode.window.showInformationMessage('Open Git Lens: this file has no history yet.');
+        vscode.window.showInformationMessage('Open GitLens: this file has no history yet.');
         return;
     }
     await openRevisionsDiff({

@@ -31,14 +31,14 @@ async function getRoot() {
 async function runAction(root, title, args) {
     try {
         const output = await vscode.window.withProgress(
-            { location: vscode.ProgressLocation.Notification, title: `Open Git Lens: ${title}` },
+            { location: vscode.ProgressLocation.Notification, title: `Open GitLens: ${title}` },
             () => git.exec(root, args),
         );
         notifyChanged();
         return output;
     } catch (error) {
         notifyChanged();
-        vscode.window.showErrorMessage(`Open Git Lens: ${title} failed. ${error.message}`);
+        vscode.window.showErrorMessage(`Open GitLens: ${title} failed. ${error.message}`);
     }
 }
 
@@ -46,7 +46,7 @@ async function guarded(action) {
     try {
         await action();
     } catch (error) {
-        vscode.window.showErrorMessage(`Open Git Lens: ${error.message}`);
+        vscode.window.showErrorMessage(`Open GitLens: ${error.message}`);
     }
 }
 

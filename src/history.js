@@ -47,7 +47,7 @@ async function openCommitDiff({ filePath, root, sha, file, oldFile }) {
 
 async function pickCommit(commits, placeHolder, filePath) {
     if (commits.length === 0) {
-        vscode.window.showInformationMessage('Open Git Lens: no history found.');
+        vscode.window.showInformationMessage('Open GitLens: no history found.');
         return;
     }
     const picked = await vscode.window.showQuickPick(
@@ -67,7 +67,7 @@ async function pickCommit(commits, placeHolder, filePath) {
 function activeFile() {
     const editor = vscode.window.activeTextEditor;
     if (!editor || editor.document.uri.scheme !== 'file') {
-        vscode.window.showInformationMessage('Open Git Lens: open a file first.');
+        vscode.window.showInformationMessage('Open GitLens: open a file first.');
         return;
     }
     return editor;

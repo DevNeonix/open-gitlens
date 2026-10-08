@@ -95,7 +95,7 @@ function register(context) {
             const { root, relativePath } = await git.getRelativePath(args.filePath);
             const parent = await git.getParentSha(root, args.sha);
             if (!parent) {
-                vscode.window.showInformationMessage('Open Git Lens: this commit has no previous revision.');
+                vscode.window.showInformationMessage('Open GitLens: this commit has no previous revision.');
                 return;
             }
             const document = await vscode.workspace.openTextDocument(toRevisionUri(root, parent, relativePath));

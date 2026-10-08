@@ -201,12 +201,12 @@ function register(context) {
         const entries = await gitGraph.getStatus(root);
         if (op === 'commit') {
             if (!amend && !entries.some(entry => entry.staged)) {
-                vscode.window.showWarningMessage('Open Git Lens: nothing is staged. Stage some files first.');
+                vscode.window.showWarningMessage('Open GitLens: nothing is staged. Stage some files first.');
                 return;
             }
             const args = ['commit', ...(amend ? ['--amend'] : []), ...(message ? ['-m', message] : ['--no-edit'])];
             if (!amend && !message) {
-                vscode.window.showWarningMessage('Open Git Lens: write a commit message.');
+                vscode.window.showWarningMessage('Open GitLens: write a commit message.');
                 return;
             }
             await runAction(root, amend ? 'amend commit' : 'commit', args);

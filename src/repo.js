@@ -89,5 +89,15 @@ function fileEditor(schemes = ['file']) {
     return vscode.window.visibleTextEditors.find(editor => schemes.includes(editor.document.uri.scheme));
 }
 
+/**
+ * File URI from a command argument. VS Code passes the clicked resource from the Explorer and editor
+ * title menus (a Uri) and from Source Control (an object with `resourceUri`).
+ */
+function uriFromArg(arg) {
+    const candidate = arg instanceof vscode.Uri ? arg : arg?.resourceUri;
+    return candidate instanceof vscode.Uri && candidate.scheme === 'file' ? candidate : undefined;
+}
+
 module.exports = {
+    uriFromArg,
     fileEditor, getRoot, runAction, guarded, confirm, onDidChangeRepo, notifyChanged, getOutput, log, quickPick, inputBox, withLoading };

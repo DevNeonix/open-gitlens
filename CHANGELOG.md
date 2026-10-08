@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.5
+
+- Fix: file commands launched from the side bar (Explorer, Source Control, editor tab menu) now act on the file you clicked instead of only the active editor. Previously nothing happened when no editor was open or another file was active.
+- The Explorer, Source Control and tab menus now show only file-level actions (no line history).
+- e2e: a hanging step becomes a named failure; added side-bar scenarios.
+
 ## 0.2.4
 
 - The "Open GitLens" output channel now traces what each history command does (file found, commits found, selection, diff opened).

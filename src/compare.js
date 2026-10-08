@@ -3,7 +3,7 @@ const vscode = require('vscode');
 
 const git = require('./git');
 const { openRevisionsDiff, toRevisionUri } = require('./history');
-const { getRoot, guarded, quickPick, inputBox } = require('./repo');
+const { fileEditor, getRoot, guarded, inputBox, quickPick, uriFromArg } = require('./repo');
 const { fromNow } = require('./time');
 
 const STATUS_ICONS = {
@@ -101,8 +101,8 @@ async function pickRef(root, { placeHolder = 'Compare working tree with…', fil
 
 /** File from an explorer/editor context menu argument, or the active editor. */
 function targetFile(arg) {
-    const uri = arg?.scheme === 'file' ? arg : vscode.window.activeTextEditor?.document.uri;
-    if (!uri || uri.scheme !== 'file') {
+    const uri = uriFromArg(arg) ?? fileEditor()?.document.uri;
+    if (!uri) {
         throw new Error('Open a file first.');
     }
     return uri.fsPath;

@@ -2,7 +2,7 @@
     "name": "open-gitlens",
     "displayName": "Open GitLens",
     "description": "Free Git supercharger for VS Code: commit graph, line blame, file history, worktrees, compare and more. No account, runs locally.",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "publisher": "devneonix",
     "license": "MIT",
     "icon": "resources/icon.png",
@@ -610,7 +610,7 @@
             ],
             "explorer/context": [
                 {
-                    "submenu": "openGitLens.menu",
+                    "submenu": "openGitLens.fileMenu",
                     "group": "7_modification@100",
                     "when": "resourceScheme == file && !explorerResourceIsFolder"
                 }
@@ -644,15 +644,55 @@
             ],
             "editor/title/context": [
                 {
-                    "submenu": "openGitLens.menu",
+                    "submenu": "openGitLens.fileMenu",
                     "group": "1_git@100",
                     "when": "resourceScheme == file"
+                }
+            ],
+            "openGitLens.fileMenu": [
+                {
+                    "command": "openGitLens.showFileHistory",
+                    "group": "1_file@0"
+                },
+                {
+                    "command": "openGitLens.compareFileWithRef",
+                    "group": "1_file@1"
+                },
+                {
+                    "command": "openGitLens.compareFileWithPrevious",
+                    "group": "1_file@2"
+                },
+                {
+                    "command": "openGitLens.compareFileBetweenRefs",
+                    "group": "1_file@3"
+                },
+                {
+                    "command": "openGitLens.openFileAtRevision",
+                    "group": "1_file@4"
+                },
+                {
+                    "command": "openGitLens.diffWithPrevious",
+                    "group": "1_file@5"
+                },
+                {
+                    "command": "openGitLens.showGraph",
+                    "group": "1_file@6"
+                }
+            ],
+            "scm/resourceState/context": [
+                {
+                    "submenu": "openGitLens.fileMenu",
+                    "group": "7_openGitLens"
                 }
             ]
         },
         "submenus": [
             {
                 "id": "openGitLens.menu",
+                "label": "Open GitLens"
+            },
+            {
+                "id": "openGitLens.fileMenu",
                 "label": "Open GitLens"
             }
         ],

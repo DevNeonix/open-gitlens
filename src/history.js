@@ -2,7 +2,7 @@ const path = require('node:path');
 const vscode = require('vscode');
 
 const git = require('./git');
-const { fileEditor, guarded, log, quickPick, withLoading } = require('./repo');
+const { fileEditor, guarded, log, quickPick, uriFromArg, withLoading } = require('./repo');
 const { fromNow } = require('./time');
 
 const SCHEME = 'open-git-lens';
@@ -81,13 +81,13 @@ function register(context) {
     context.subscriptions.push(
         vscode.workspace.registerTextDocumentContentProvider(SCHEME, contentProvider),
         vscode.commands.registerCommand('openGitLens.openCommitDiff', args => guarded(() => openCommitDiff(args))),
-        vscode.commands.registerCommand('openGitLens.showFileHistory', () => guarded(async () => {
-            log('command: Show File History');
-            const editor = activeFile();
-            if (!editor) {
+        vscode.commands.registerCommand('openGitLens.showFileHistory', arg => guarded(async () => {
+            const clicked = uriFromArg(arg);
+            log(`command: Show File History (${clicked ? 'clicked file' : 'active editor'})`);
+            const filePath = clicked?.fsPath ?? activeFile()?.document.uri.fsPath;
+            if (!filePath) {
                 return;
             }
-            const filePath = editor.document.uri.fsPath;
             await pickCommit(await withLoading('loading file history…', () => git.fileHistory(filePath)), `History of ${path.basename(filePath)}`, filePath);
         })),
         vscode.commands.registerCommand('openGitLens.showRangeHistory', ({ filePath, start, end }) => guarded(async () => {

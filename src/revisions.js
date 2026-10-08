@@ -3,17 +3,17 @@ const vscode = require('vscode');
 
 const git = require('./git');
 const { openRevisionsDiff, SCHEME } = require('./history');
-const { fileEditor, guarded } = require('./repo');
+const { fileEditor, guarded, uriFromArg } = require('./repo');
 
 const RECORD = '\x1e';
 
 /** Identifies the file shown in the active editor, either on disk or at a revision. */
-async function resolveActive() {
-    const editor = fileEditor(['file', SCHEME]);
-    if (!editor) {
+async function resolveActive(clicked) {
+    const editor = clicked ? undefined : fileEditor(['file', SCHEME]);
+    if (!clicked && !editor) {
         throw new Error('Open a file first.');
     }
-    const { uri } = editor.document;
+    const uri = clicked ?? editor.document.uri;
     if (uri.scheme === SCHEME) {
         const { root, rev } = JSON.parse(uri.query);
         return { root, rev, relativePath: uri.path.slice(1) };
@@ -36,8 +36,8 @@ async function touching(root, rev, relativePath, limit) {
 
 const short = sha => sha.slice(0, 8);
 
-async function diffWithPrevious() {
-    const { root, rev, relativePath } = await resolveActive();
+async function diffWithPrevious(arg) {
+    const { root, rev, relativePath } = await resolveActive(uriFromArg(arg));
     const commits = await touching(root, rev, relativePath, 2);
     if (commits.length === 0) {
         vscode.window.showInformationMessage('Open GitLens: this file has no history yet.');
@@ -88,7 +88,7 @@ async function openWorkingFile() {
 }
 
 function register(context) {
-    const cmd = (id, handler) => vscode.commands.registerCommand(id, () => guarded(handler));
+    const cmd = (id, handler) => vscode.commands.registerCommand(id, arg => guarded(() => handler(arg)));
     context.subscriptions.push(
         cmd('openGitLens.diffWithPrevious', diffWithPrevious),
         cmd('openGitLens.diffWithNext', diffWithNext),

@@ -10,13 +10,23 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms * SLOW));
 const results = [];
 const MAIN_FILE = process.env.OGL_E2E_FILE || 'src/main.txt';
 
+const STEP_TIMEOUT_MS = 45_000 * SLOW;
+
+/** Runs one step; a hanging step becomes a named failure instead of blocking the whole run. */
 async function step(name, action) {
+    let timer;
     try {
         await vscode.commands.executeCommand('workbench.action.closeAllEditors');
-        await action();
+        await Promise.race([
+            action(),
+            new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`step timed out after ${STEP_TIMEOUT_MS / 1000}s (a quick pick probably stayed open)`)), STEP_TIMEOUT_MS); }),
+        ]);
         results.push([name, 'ok']);
     } catch (error) {
         results.push([name, `${error.message}`.split('\n')[0]]);
+    } finally {
+        clearTimeout(timer);
+        await vscode.commands.executeCommand('workbench.action.closeQuickOpen');
     }
 }
 
@@ -47,7 +57,7 @@ async function drive(commandId, args = [], downsPerPick = [1]) {
         }
         await vscode.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem');
     }
-    await done;
+    await Promise.race([done, sleep(10_000)]);
     await sleep(800);
 }
 
@@ -162,6 +172,22 @@ exports.run = async function run() {
         await openMainFile();
         await vscode.commands.executeCommand('openGitLens.diagnose');
         await vscode.commands.executeCommand('openGitLens.showLog');
+    });
+
+    await step('Sidebar: Show File History for a file clicked in the Explorer (no editor open)', async () => {
+        await drive('openGitLens.showFileHistory', [fileUri(MAIN_FILE)], [0]);
+        assertRevisionDiff('showFileHistory from explorer');
+    });
+
+    await step('Sidebar: Source Control resource context (resourceUri argument)', async () => {
+        await drive('openGitLens.showFileHistory', [{ resourceUri: fileUri(MAIN_FILE) }], [0]);
+        assertRevisionDiff('showFileHistory from scm');
+    });
+
+    await step('Sidebar: Open Changes with Previous Revision for a clicked file', async () => {
+        await vscode.commands.executeCommand('openGitLens.diffWithPrevious', fileUri(MAIN_FILE));
+        await sleep(800);
+        assertRevisionDiff('diffWithPrevious from explorer');
     });
 
     await step('Show File History (path) command used by the graph', async () => {

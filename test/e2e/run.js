@@ -5,7 +5,14 @@ const { runTests } = require('@vscode/test-electron');
 
 const { createFixtureRepo, isolateGitEnv, removeDir } = require('../unit/helpers');
 
+const RUN_TIMEOUT_MS = 8 * 60 * 1000;
+
 async function main() {
+    const watchdog = setTimeout(() => {
+        console.error('e2e exceeded the global timeout');
+        process.exit(2);
+    }, RUN_TIMEOUT_MS);
+    watchdog.unref();
     // OGL_E2E_WORKSPACE lets you run the same checks against a real repository (read-only checks).
     const customWorkspace = process.env.OGL_E2E_WORKSPACE;
     if (!customWorkspace) {

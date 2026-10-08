@@ -1,5 +1,5 @@
 {
-    "name": "open-git-lens",
+    "name": "open-gitlens",
     "displayName": "Open GitLens",
     "description": "Free Git supercharger for VS Code: commit graph, line blame, file history, worktrees, compare and more. No account, runs locally.",
     "version": "0.2.1",
@@ -9,12 +9,12 @@
     "preview": true,
     "repository": {
         "type": "git",
-        "url": "https://github.com/DevNeonix/open-git-lens.git"
+        "url": "https://github.com/DevNeonix/open-gitlens.git"
     },
     "bugs": {
-        "url": "https://github.com/DevNeonix/open-git-lens/issues"
+        "url": "https://github.com/DevNeonix/open-gitlens/issues"
     },
-    "homepage": "https://github.com/DevNeonix/open-git-lens#readme",
+    "homepage": "https://github.com/DevNeonix/open-gitlens#readme",
     "galleryBanner": {
         "color": "#10131c",
         "theme": "dark"

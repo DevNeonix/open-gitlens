@@ -2,7 +2,7 @@
 
 ## 0.2.1
 
-- Rename display name to "Open GitLens".
+- Rename display name to "Open GitLens" and extension id to `open-gitlens`.
 
 ## 0.2.0
 

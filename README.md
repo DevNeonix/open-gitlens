@@ -35,7 +35,7 @@ Launchpad, Cloud Patches, Code Suggest, and all AI features.
 ## Install locally
 
 ```bash
-ln -s "$PWD" ~/.vscode/extensions/local.open-git-lens-0.2.0
+ln -s "$PWD" ~/.vscode/extensions/devneonix.open-gitlens-0.2.1
 ```
 
 Reload the window (`Developer: Reload Window`). Or open this folder in VS Code and press `F5`.

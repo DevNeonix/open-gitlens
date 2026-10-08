@@ -5,14 +5,31 @@ const UNCOMMITTED_SHA = '0'.repeat(40);
 
 const userNames = new Map();
 
+let gitPath = 'git';
+
+/** Lets the host (VS Code) tell us which git executable to use; important when git is not on PATH. */
+function setGitPath(value) {
+    gitPath = value || 'git';
+}
+
+/** English messages (we parse some output), no credential prompts that would hang the extension. */
+function gitEnv() {
+    return { ...process.env, LANGUAGE: 'en', LC_MESSAGES: 'C', GIT_TERMINAL_PROMPT: '0', GIT_OPTIONAL_LOCKS: '0' };
+}
+
 function runGit(args, cwd, input) {
     return new Promise((resolve, reject) => {
-        const child = spawn('git', args, { cwd });
+        // quotepath=off: keep non-ASCII file names readable instead of octal-escaped
+        const child = spawn(gitPath, ['-c', 'core.quotepath=off', ...args], { cwd, env: gitEnv(), windowsHide: true });
         let stdout = '';
         let stderr = '';
         child.stdout.setEncoding('utf8').on('data', chunk => { stdout += chunk; });
         child.stderr.setEncoding('utf8').on('data', chunk => { stderr += chunk; });
-        child.on('error', reject);
+        child.on('error', error => {
+            reject(error.code === 'ENOENT'
+                ? new Error(`git was not found ("${gitPath}"). Install git or set the "git.path" setting.`)
+                : error);
+        });
         child.on('close', code => {
             if (code === 0) {
                 resolve(stdout);
@@ -355,6 +372,7 @@ function exec(cwd, args) {
 
 module.exports = {
     exec,
+    setGitPath,
     getGraph,
     getCommitDetails,
     commitFiles,

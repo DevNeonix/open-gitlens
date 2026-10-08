@@ -2,7 +2,7 @@
     "name": "open-gitlens",
     "displayName": "Open GitLens",
     "description": "Free Git supercharger for VS Code: commit graph, line blame, file history, worktrees, compare and more. No account, runs locally.",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "publisher": "devneonix",
     "license": "MIT",
     "icon": "resources/icon.png",
@@ -728,8 +728,14 @@
         }
     },
     "scripts": {
-        "check": "node --check src/*.js && node --check media/graph.js",
-        "package": "npx @vscode/vsce package",
-        "publish": "npx @vscode/vsce publish"
+        "check": "node --check src/extension.js && node --check media/graph.js",
+        "test:unit": "node --test \"test/unit/*.test.js\"",
+        "test:e2e": "node test/e2e/run.js",
+        "test": "npm run check && npm run test:unit",
+        "package": "npx @vscode/vsce package --no-dependencies",
+        "publish": "npx @vscode/vsce publish --no-dependencies"
+    },
+    "devDependencies": {
+        "@vscode/test-electron": "^3.1.0"
     }
 }

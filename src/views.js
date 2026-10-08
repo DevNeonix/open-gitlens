@@ -125,17 +125,24 @@ async function contributorRoots(root) {
 
 const BRANCH_NAME = /^(?!-)[^\s~^:?*[\\]+$/;
 
+const normalizePath = value => (process.platform === 'win32' ? path.resolve(value).toLowerCase() : path.resolve(value));
+
+function abbreviateHome(value) {
+    const home = os.homedir();
+    return normalizePath(value).startsWith(normalizePath(home)) ? `~${value.slice(home.length)}` : value;
+}
+
 async function worktreeRoots(root) {
     const worktrees = await gitGraph.listWorktrees(root);
     return worktrees.map((worktree, index) => {
-        const current = path.resolve(worktree.path) === path.resolve(root);
+        const current = normalizePath(worktree.path) === normalizePath(root);
         const label = worktree.branch || (worktree.bare ? '(bare)' : worktree.detached ? `(detached ${worktree.head.slice(0, 8)})` : path.basename(worktree.path));
         const flags = [index === 0 && 'main', worktree.locked && 'locked', worktree.prunable && 'prunable'].filter(Boolean).join(', ');
         const kind = current ? 'current' : index === 0 ? 'main' : 'linked';
         return makeItem(label, { root, main: index === 0, ...worktree }, {
             icon: current ? 'home' : 'repo',
             color: current ? 'charts.green' : undefined,
-            description: `${worktree.path.replace(os.homedir(), '~')}${flags ? `  (${flags})` : ''}`,
+            description: `${abbreviateHome(worktree.path)}${flags ? `  (${flags})` : ''}`,
             tooltip: `${worktree.path}\n${worktree.head}`,
             contextValue: `worktree.${kind}`,
         });

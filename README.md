@@ -32,13 +32,25 @@ Branches, Compare, Worktrees (create, open in new window, remove), Tags, Stashes
 
 Launchpad, Cloud Patches, Code Suggest, and all AI features.
 
-## Install locally
+## Supported platforms
+
+Windows, Linux and macOS. Needs `git` available to VS Code (it uses the same executable as the built-in Git extension, or the `git.path` setting). CI runs the unit tests and an end-to-end suite in a real VS Code on all three systems.
+
+## Install
+
+From the Marketplace: search for **Open GitLens**, or run `code --install-extension devneonix.open-gitlens`.
+
+From a `.vsix`: `code --install-extension open-gitlens-<version>.vsix`.
+
+## Develop
 
 ```bash
-ln -s "$PWD" ~/.vscode/extensions/devneonix.open-gitlens-0.2.1
+npm ci
+npm test                # syntax check + unit tests (temporary git repos)
+npm run test:e2e        # runs the commands in a real VS Code (downloads it once)
 ```
 
-Reload the window (`Developer: Reload Window`). Or open this folder in VS Code and press `F5`.
+Run the extension from source: open this folder in VS Code and press `F5`.
 
 Avatars come from Gravatar/GitHub. Disable with `openGitLens.graph.avatars: false`.
 
@@ -49,4 +61,5 @@ Avatars come from Gravatar/GitHub. Disable with `openGitLens.graph.avatars: fals
 - `src/graphLayout.js` pure lane-assignment algorithm
 - `src/graph.js` + `media/graph.{js,css}` Commit Graph webview
 - `src/views.js` tree views, `src/compare.js` Compare, `src/revisions.js` revision navigation
+- `test/unit` git-layer tests, `test/e2e` real VS Code tests
 - `src/extension.js` line blame, `src/annotations.js` file blame, `src/history.js` history/diffs, `src/codelens.js`, `src/actions.js`

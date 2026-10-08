@@ -5,7 +5,8 @@ const annotations = require('./annotations');
 const codelens = require('./codelens');
 const compare = require('./compare');
 const graph = require('./graph');
-const { blameLine, getUserName } = require('./git');
+const git = require('./git');
+const { blameLine, getUserName } = git;
 const history = require('./history');
 const revisions = require('./revisions');
 const views = require('./views');
@@ -52,7 +53,20 @@ function buildHover(blame, who, filePath) {
     return hover;
 }
 
-function activate(context) {
+/** Path of the git executable VS Code itself uses (handles git outside PATH on Windows/macOS). */
+async function resolveGitPath() {
+    try {
+        const extension = vscode.extensions.getExtension('vscode.git');
+        const exports = await extension?.activate();
+        return exports?.getAPI(1).git.path;
+    } catch {
+        return undefined;
+    }
+}
+
+async function activate(context) {
+    git.setGitPath(await resolveGitPath());
+
     const decoration = vscode.window.createTextEditorDecorationType({
         after: {
             color: new vscode.ThemeColor('editorCodeLens.foreground'),

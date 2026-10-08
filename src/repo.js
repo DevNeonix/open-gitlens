@@ -3,6 +3,18 @@ const vscode = require('vscode');
 
 const git = require('./git');
 
+let channel;
+
+function getOutput() {
+    channel ??= vscode.window.createOutputChannel('Open GitLens');
+    return channel;
+}
+
+/** Appends a timestamped line to the "Open GitLens" output channel. */
+function log(message) {
+    getOutput().appendLine(`[${new Date().toISOString().slice(11, 23)}] ${message}`);
+}
+
 const changed = new vscode.EventEmitter();
 
 /** Fires after any action that modifies the repo, so views can refresh. */
@@ -46,12 +58,23 @@ async function guarded(action) {
     try {
         await action();
     } catch (error) {
+        log(`ERROR ${error.stack ?? error.message}`);
         vscode.window.showErrorMessage(`Open GitLens: ${error.message}`);
     }
 }
+
+/** Quick pick that stays open when focus moves (e.g. when launched from a context menu). */
+const quickPick = (items, options) => vscode.window.showQuickPick(items, { ignoreFocusOut: true, ...options });
+const inputBox = options => vscode.window.showInputBox({ ignoreFocusOut: true, ...options });
+
+/** Shows progress in the status bar while a slow task runs, so the user sees something is happening. */
+const withLoading = (title, task) => vscode.window.withProgress(
+    { location: vscode.ProgressLocation.Window, title: `Open GitLens: ${title}` },
+    task,
+);
 
 async function confirm(message, action) {
     return (await vscode.window.showWarningMessage(message, { modal: true }, action)) === action;
 }
 
-module.exports = { getRoot, runAction, guarded, confirm, onDidChangeRepo, notifyChanged };
+module.exports = { getRoot, runAction, guarded, confirm, onDidChangeRepo, notifyChanged, getOutput, log, quickPick, inputBox, withLoading };

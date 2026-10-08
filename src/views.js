@@ -6,7 +6,7 @@ const actions = require('./actions');
 const git = require('./git');
 const gitGraph = require('./gitGraph');
 const { openCommitDiff } = require('./history');
-const { getRoot, guarded, confirm, onDidChangeRepo, runAction } = require('./repo');
+const { getRoot, guarded, confirm, onDidChangeRepo, runAction, quickPick, inputBox } = require('./repo');
 const { fromNow } = require('./time');
 
 class RepoTreeProvider {
@@ -154,7 +154,7 @@ async function createWorktree() {
     const branches = (await git.listBranches(root)).filter(branch => !branch.remote);
     const worktrees = await gitGraph.listWorktrees(root);
     const taken = new Set(worktrees.map(worktree => worktree.branch));
-    const picked = await vscode.window.showQuickPick(
+    const picked = await quickPick(
         [
             { label: '$(add) Create new branch…', create: true },
             ...branches.filter(branch => !taken.has(branch.name)).map(branch => ({ label: `$(git-branch) ${branch.name}`, branch: branch.name })),
@@ -166,7 +166,7 @@ async function createWorktree() {
     }
     let branch = picked.branch;
     if (picked.create) {
-        branch = await vscode.window.showInputBox({
+        branch = await inputBox({
             prompt: 'New branch name',
             validateInput: value => (BRANCH_NAME.test(value) ? undefined : 'Invalid branch name'),
         });
@@ -176,7 +176,7 @@ async function createWorktree() {
     }
     const mainRoot = worktrees[0]?.path ?? root;
     const suggested = path.join(path.dirname(mainRoot), `${path.basename(mainRoot)}.worktrees`, branch.replace(/[/\\]/g, '-'));
-    const target = await vscode.window.showInputBox({ prompt: 'Worktree folder', value: suggested });
+    const target = await inputBox({ prompt: 'Worktree folder', value: suggested });
     if (!target) {
         return;
     }
@@ -209,7 +209,7 @@ async function showStash({ data }) {
         vscode.window.showInformationMessage('Open GitLens: this stash has no tracked file changes.');
         return;
     }
-    const picked = await vscode.window.showQuickPick(
+    const picked = await quickPick(
         files.map(file => ({ label: file.file, description: file.status, file })),
         { placeHolder: `${data.ref}: ${data.message}` },
     );

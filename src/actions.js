@@ -1,12 +1,12 @@
 const vscode = require('vscode');
 
 const git = require('./git');
-const { runAction, confirm } = require('./repo');
+const { runAction, confirm, quickPick, inputBox } = require('./repo');
 
 const BRANCH_NAME = /^(?!-)[^\s~^:?*[\\]+$/;
 
 function askName(prompt, placeHolder) {
-    return vscode.window.showInputBox({
+    return inputBox({
         prompt,
         placeHolder,
         validateInput: value => (BRANCH_NAME.test(value) ? undefined : 'Invalid name'),
@@ -22,7 +22,7 @@ const actions = {
         const detached = { label: '$(git-commit) Detached HEAD', description: sha.slice(0, 8) };
         const picked = localBranches.length === 0
             ? detached
-            : await vscode.window.showQuickPick(
+            : await quickPick(
                 [...localBranches.map(name => ({ label: `$(git-branch) ${name}`, ref: name })), detached],
                 { placeHolder: 'Checkout' },
             );
@@ -76,7 +76,7 @@ const actions = {
     },
 
     async reset(root, sha) {
-        const mode = await vscode.window.showQuickPick(
+        const mode = await quickPick(
             [
                 { label: 'Soft', description: 'Keep changes staged', mode: '--soft' },
                 { label: 'Mixed', description: 'Keep changes unstaged', mode: '--mixed' },
@@ -94,7 +94,7 @@ const actions = {
     },
 
     async stashPush(root) {
-        const message = await vscode.window.showInputBox({ prompt: 'Stash message (optional)' });
+        const message = await inputBox({ prompt: 'Stash message (optional)' });
         if (message === undefined) {
             return;
         }

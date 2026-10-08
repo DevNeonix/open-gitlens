@@ -6,7 +6,7 @@ const git = require('./git');
 const gitGraph = require('./gitGraph');
 const { layoutGraph } = require('./graphLayout');
 const { openCommitDiff, openRevisionsDiff } = require('./history');
-const { getRoot, guarded, confirm, runAction, onDidChangeRepo } = require('./repo');
+const { getRoot, guarded, confirm, runAction, onDidChangeRepo, quickPick } = require('./repo');
 
 const PAGE_SIZE = 500;
 const RELOAD_DEBOUNCE_MS = 300;
@@ -227,7 +227,7 @@ function register(context) {
 
     const switchBranch = async () => {
         const branches = (await git.listBranches(root)).filter(branch => !branch.remote);
-        const picked = await vscode.window.showQuickPick(
+        const picked = await quickPick(
             branches.map(branch => ({ label: `$(git-branch) ${branch.name}`, description: branch.current ? 'current' : branch.upstream, name: branch.name })),
             { placeHolder: 'Switch to branch' },
         );

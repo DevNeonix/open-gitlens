@@ -181,6 +181,35 @@ describe('git layer', () => {
         assert.equal(await lib.getCommitUrl(root, 'abc'), 'https://bitbucket.org/owner/repo/commits/abc');
     });
 
+    it('does not hang when a background child keeps the output pipe open (git wrappers/proxies)', async () => {
+        const script = [
+            "const { spawn } = require('node:child_process');",
+            "spawn(process.execPath, ['-e', 'setTimeout(() => {}, 5000)'], { stdio: ['ignore', 1, 2] }).unref();",
+            "process.stdout.write('done');",
+            'process.exit(0);',
+        ].join(' ');
+        const started = Date.now();
+        const output = await lib.runProcess(process.execPath, ['-e', script], { env: process.env, timeout: 20_000 });
+        assert.equal(output, 'done');
+        assert.ok(Date.now() - started < 3500, `took ${Date.now() - started}ms`);
+    });
+
+    it('stops a command that never finishes and reports it', async () => {
+        await assert.rejects(
+            () => lib.runProcess(process.execPath, ['-e', 'setTimeout(() => {}, 10000)'], { env: process.env, timeout: 300 }),
+            /did not finish/,
+        );
+    });
+
+    it('logs each git invocation', async () => {
+        const lines = [];
+        lib.setLogger(line => lines.push(line));
+        await lib.exec(root, ['rev-parse', 'HEAD']);
+        lib.setLogger(undefined);
+        assert.equal(lines.length, 1);
+        assert.match(lines[0], /^\d+ms ok git rev-parse HEAD$/);
+    });
+
     it('reports a clear error when git is missing', async () => {
         lib.setGitPath('definitely-not-a-git-binary');
         await assert.rejects(() => lib.exec(root, ['status']), /git was not found/);

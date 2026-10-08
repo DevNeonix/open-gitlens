@@ -6,10 +6,27 @@ const UNCOMMITTED_SHA = '0'.repeat(40);
 const userNames = new Map();
 
 let gitPath = 'git';
+let logger;
+let timeoutMs = 60_000;
+const EXIT_GRACE_MS = 400;
 
 /** Lets the host (VS Code) tell us which git executable to use; important when git is not on PATH. */
 function setGitPath(value) {
     gitPath = value || 'git';
+}
+
+function getGitPath() {
+    return gitPath;
+}
+
+/** `fn(message)` receives one line per git invocation (command, duration, outcome). */
+function setLogger(fn) {
+    logger = fn;
+}
+
+/** Kills git after this many milliseconds. 0 disables the timeout. */
+function setTimeoutMs(value) {
+    timeoutMs = value;
 }
 
 /** English messages (we parse some output), no credential prompts that would hang the extension. */
@@ -17,29 +34,65 @@ function gitEnv() {
     return { ...process.env, LANGUAGE: 'en', LC_MESSAGES: 'C', GIT_TERMINAL_PROMPT: '0', GIT_OPTIONAL_LOCKS: '0' };
 }
 
-function runGit(args, cwd, input) {
+/**
+ * Runs a process and collects stdout.
+ * Resolves when the process EXITS (after a short grace period for pending output) instead of waiting for
+ * 'close'. Git wrappers/proxies can leave background children holding the pipes open, which would make
+ * 'close' never fire and the caller hang forever.
+ */
+function runProcess(command, args, { cwd, env, input, timeout = 0, label = command } = {}) {
     return new Promise((resolve, reject) => {
-        // quotepath=off: keep non-ASCII file names readable instead of octal-escaped
-        const child = spawn(gitPath, ['-c', 'core.quotepath=off', ...args], { cwd, env: gitEnv(), windowsHide: true });
+        const started = Date.now();
+        const child = spawn(command, args, { cwd, env, windowsHide: true });
         let stdout = '';
         let stderr = '';
+        let settled = false;
+        let timer;
+        let exitTimer;
+
+        const finish = (action, value, outcome) => {
+            if (settled) {
+                return;
+            }
+            settled = true;
+            clearTimeout(timer);
+            clearTimeout(exitTimer);
+            child.stdout.destroy();
+            child.stderr.destroy();
+            logger?.(`${Date.now() - started}ms ${outcome} ${label}`);
+            action(value);
+        };
+        const complete = code => (code === 0
+            ? finish(resolve, stdout, 'ok')
+            : finish(reject, new Error(stderr.trim() || `git exited with code ${code}`), `exit=${code}`));
+
         child.stdout.setEncoding('utf8').on('data', chunk => { stdout += chunk; });
         child.stderr.setEncoding('utf8').on('data', chunk => { stderr += chunk; });
         child.on('error', error => {
-            reject(error.code === 'ENOENT'
-                ? new Error(`git was not found ("${gitPath}"). Install git or set the "git.path" setting.`)
-                : error);
+            finish(reject, error.code === 'ENOENT'
+                ? new Error(`git was not found ("${command}"). Install git or set the "git.path" setting.`)
+                : error, 'error');
         });
-        child.on('close', code => {
-            if (code === 0) {
-                resolve(stdout);
-            } else {
-                reject(new Error(stderr.trim() || `git exited with code ${code}`));
-            }
+        child.on('exit', code => {
+            exitTimer = setTimeout(() => complete(code), EXIT_GRACE_MS);
         });
+        child.on('close', complete);
         child.stdin.on('error', () => { /* git may exit before reading stdin */ });
         child.stdin.end(input);
+
+        if (timeout > 0) {
+            timer = setTimeout(() => {
+                child.kill();
+                finish(reject, new Error(`git ${args.find(arg => !arg.startsWith('-') && arg !== 'core.quotepath=off') ?? ''} did not finish after ${Math.round(timeout / 1000)}s and was stopped. Check the "git" executable (see "Open GitLens: Diagnose").`), 'timeout');
+            }, timeout);
+        }
     });
+}
+
+function runGit(args, cwd, input) {
+    // quotepath=off: keep non-ASCII file names readable instead of octal-escaped
+    const fullArgs = ['-c', 'core.quotepath=off', ...args];
+    return runProcess(gitPath, fullArgs, { cwd, env: gitEnv(), input, timeout: timeoutMs, label: `git ${args.join(' ').slice(0, 140)}` });
 }
 
 function parsePorcelain(output) {
@@ -380,7 +433,11 @@ function exec(cwd, args) {
 
 module.exports = {
     exec,
+    runProcess,
     setGitPath,
+    getGitPath,
+    setLogger,
+    setTimeoutMs,
     getGraph,
     getCommitDetails,
     commitFiles,

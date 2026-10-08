@@ -4,10 +4,12 @@ const vscode = require('vscode');
 const annotations = require('./annotations');
 const codelens = require('./codelens');
 const compare = require('./compare');
+const diagnose = require('./diagnose');
 const graph = require('./graph');
 const git = require('./git');
 const { blameLine, getUserName } = git;
 const history = require('./history');
+const { log } = require('./repo');
 const revisions = require('./revisions');
 const views = require('./views');
 const { fromNow } = require('./time');
@@ -65,7 +67,16 @@ async function resolveGitPath() {
 }
 
 async function activate(context) {
+    git.setLogger(log);
     git.setGitPath(await resolveGitPath());
+    const applyTimeout = () => git.setTimeoutMs(vscode.workspace.getConfiguration('openGitLens').get('gitTimeoutSeconds', 60) * 1000);
+    applyTimeout();
+    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(event => {
+        if (event.affectsConfiguration('openGitLens.gitTimeoutSeconds')) {
+            applyTimeout();
+        }
+    }));
+    log(`Activated. git: ${git.getGitPath()}`);
 
     const decoration = vscode.window.createTextEditorDecorationType({
         after: {
@@ -178,6 +189,7 @@ async function activate(context) {
     views.register(context);
     codelens.register(context);
     revisions.register(context);
+    diagnose.register(context);
     scheduleUpdate(vscode.window.activeTextEditor);
 }
 

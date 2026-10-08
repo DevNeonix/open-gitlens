@@ -3,7 +3,7 @@ const vscode = require('vscode');
 
 const git = require('./git');
 const { openRevisionsDiff, toRevisionUri } = require('./history');
-const { getRoot, guarded } = require('./repo');
+const { getRoot, guarded, quickPick, inputBox } = require('./repo');
 const { fromNow } = require('./time');
 
 const STATUS_ICONS = {
@@ -92,11 +92,11 @@ async function pickRef(root, { placeHolder = 'Compare working tree with…', fil
         { label: 'Tags', kind: vscode.QuickPickItemKind.Separator },
         ...tags.map(tag => ({ label: `$(tag) ${tag.name}`, ref: tag.name })),
     ];
-    const picked = await vscode.window.showQuickPick(items, { placeHolder, matchOnDescription: true, matchOnDetail: true });
+    const picked = await quickPick(items, { placeHolder, matchOnDescription: true, matchOnDetail: true });
     if (!picked) {
         return;
     }
-    return picked.manual ? vscode.window.showInputBox({ prompt: 'Commit SHA, branch or tag' }) : picked.ref;
+    return picked.manual ? inputBox({ prompt: 'Commit SHA, branch or tag' }) : picked.ref;
 }
 
 /** File from an explorer/editor context menu argument, or the active editor. */

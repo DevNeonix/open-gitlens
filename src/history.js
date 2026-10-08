@@ -2,7 +2,7 @@ const path = require('node:path');
 const vscode = require('vscode');
 
 const git = require('./git');
-const { guarded } = require('./repo');
+const { guarded, quickPick, withLoading } = require('./repo');
 const { fromNow } = require('./time');
 
 const SCHEME = 'open-git-lens';
@@ -50,7 +50,7 @@ async function pickCommit(commits, placeHolder, filePath) {
         vscode.window.showInformationMessage('Open GitLens: no history found.');
         return;
     }
-    const picked = await vscode.window.showQuickPick(
+    const picked = await quickPick(
         commits.map(commit => ({
             label: commit.summary,
             description: `${commit.author}, ${fromNow(commit.date)}`,
@@ -83,13 +83,13 @@ function register(context) {
                 return;
             }
             const filePath = editor.document.uri.fsPath;
-            await pickCommit(await git.fileHistory(filePath), `History of ${path.basename(filePath)}`, filePath);
+            await pickCommit(await withLoading('loading file history…', () => git.fileHistory(filePath)), `History of ${path.basename(filePath)}`, filePath);
         })),
         vscode.commands.registerCommand('openGitLens.showRangeHistory', ({ filePath, start, end }) => guarded(async () => {
-            await pickCommit(await git.lineHistory(filePath, start, end), `History of lines ${start}-${end}`, filePath);
+            await pickCommit(await withLoading('loading line history…', () => git.lineHistory(filePath, start, end)), `History of lines ${start}-${end}`, filePath);
         })),
         vscode.commands.registerCommand('openGitLens.showFileHistoryOf', filePath => guarded(async () => {
-            await pickCommit(await git.fileHistory(filePath), `History of ${path.basename(filePath)}`, filePath);
+            await pickCommit(await withLoading('loading file history…', () => git.fileHistory(filePath)), `History of ${path.basename(filePath)}`, filePath);
         })),
         vscode.commands.registerCommand('openGitLens.showLineHistory', () => guarded(async () => {
             const editor = activeFile();

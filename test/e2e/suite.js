@@ -158,6 +158,12 @@ exports.run = async function run() {
         }
     });
 
+    await step('Diagnose and Show Log run without errors', async () => {
+        await openMainFile();
+        await vscode.commands.executeCommand('openGitLens.diagnose');
+        await vscode.commands.executeCommand('openGitLens.showLog');
+    });
+
     await step('Show File History (path) command used by the graph', async () => {
         await drive('openGitLens.showFileHistoryOf', [fileUri(MAIN_FILE).fsPath], [0]);
         assertRevisionDiff('showFileHistoryOf');

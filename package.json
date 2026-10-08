@@ -2,7 +2,7 @@
     "name": "open-gitlens",
     "displayName": "Open GitLens",
     "description": "Free Git supercharger for VS Code: commit graph, line blame, file history, worktrees, compare and more. No account, runs locally.",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "publisher": "devneonix",
     "license": "MIT",
     "icon": "resources/icon.png",
@@ -281,6 +281,16 @@
                 "command": "openGitLens.toggleCodeLens",
                 "title": "Toggle Git CodeLens",
                 "category": "Open GitLens"
+            },
+            {
+                "command": "openGitLens.diagnose",
+                "title": "Diagnose",
+                "category": "Open GitLens"
+            },
+            {
+                "command": "openGitLens.showLog",
+                "title": "Show Log",
+                "category": "Open GitLens"
             }
         ],
         "configuration": {
@@ -305,6 +315,12 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Load author avatars in the Commit Graph from Gravatar and GitHub. Disable to avoid external requests."
+                },
+                "openGitLens.gitTimeoutSeconds": {
+                    "type": "number",
+                    "default": 60,
+                    "minimum": 0,
+                    "description": "Stops a git command that has not finished after this many seconds and shows an error. Use 0 to disable."
                 }
             }
         },

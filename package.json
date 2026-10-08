@@ -2,7 +2,7 @@
     "name": "open-gitlens",
     "displayName": "Open GitLens",
     "description": "Free Git supercharger for VS Code: commit graph, line blame, file history, worktrees, compare and more. No account, runs locally.",
-    "version": "0.2.5",
+    "version": "0.3.0",
     "publisher": "devneonix",
     "license": "MIT",
     "icon": "resources/icon.png",
@@ -291,6 +291,24 @@
                 "command": "openGitLens.showLog",
                 "title": "Show Log",
                 "category": "Open GitLens"
+            },
+            {
+                "command": "openGitLens.fileHistory.refresh",
+                "title": "Refresh File History",
+                "category": "Open GitLens",
+                "icon": "$(refresh)"
+            },
+            {
+                "command": "openGitLens.fileHistory.pin",
+                "title": "Pin File History",
+                "category": "Open GitLens",
+                "icon": "$(pin)"
+            },
+            {
+                "command": "openGitLens.fileHistory.unpin",
+                "title": "Unpin File History",
+                "category": "Open GitLens",
+                "icon": "$(pinned)"
             }
         ],
         "configuration": {
@@ -482,6 +500,14 @@
                 {
                     "command": "openGitLens.worktree.graph",
                     "when": "false"
+                },
+                {
+                    "command": "openGitLens.fileHistory.pin",
+                    "when": "false"
+                },
+                {
+                    "command": "openGitLens.fileHistory.unpin",
+                    "when": "false"
                 }
             ],
             "view/title": [
@@ -514,6 +540,21 @@
                     "command": "openGitLens.worktree.create",
                     "when": "view == openGitLens.worktrees",
                     "group": "navigation"
+                },
+                {
+                    "command": "openGitLens.fileHistory.refresh",
+                    "when": "view == openGitLens.fileHistory",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "openGitLens.fileHistory.pin",
+                    "when": "view == openGitLens.fileHistory && !openGitLens.fileHistoryPinned",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "openGitLens.fileHistory.unpin",
+                    "when": "view == openGitLens.fileHistory && openGitLens.fileHistoryPinned",
+                    "group": "navigation@2"
                 }
             ],
             "view/item/context": [
@@ -752,6 +793,11 @@
         },
         "views": {
             "openGitLens": [
+                {
+                    "id": "openGitLens.fileHistory",
+                    "name": "File History",
+                    "type": "webview"
+                },
                 {
                     "id": "openGitLens.branches",
                     "name": "Branches"

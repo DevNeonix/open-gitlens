@@ -22,7 +22,7 @@ Free, local-only GitLens-style Git tooling for VS Code. Plain JS, no build step,
 | Git CodeLens (latest author, author count) | `Shift+Alt+B` to toggle |
 | Compare file with branch, tag or commit; between two revisions; open file at revision | right click > Open GitLens, or `Cmd+Alt+G C` |
 | Revision navigation: previous / next / working file | `Alt+,` / `Alt+.`, or the arrows in the diff title |
-| File and line/range history | `Cmd+Alt+G H` |
+| File history in the side bar: arrow keys show each commit's changes on the right; line/range history | `Cmd+Alt+G H` |
 
 ## Side bar views
 

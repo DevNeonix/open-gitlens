@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- **File History is now a side bar view** instead of a modal quick pick. Pick a commit with the mouse or the arrow keys (Up/Down, Page Up/Down, Home/End) and its changes open on the right while the list keeps the focus, so you can keep moving through the history. Enter or double click moves focus to the editor.
+- The view follows the active file, can be pinned, loads more commits on demand and has a context menu per commit (compare with working file, open file at revision, show in graph, open on remote, copy SHA).
+- Show Line History fills the same view for the selected lines.
+- A commit that renamed the file now compares against the old name instead of showing an empty left side.
+- e2e tests no longer override HOME for the launched VS Code (it could stall startup).
+
 ## 0.2.5
 
 - Fix: file commands launched from the side bar (Explorer, Source Control, editor tab menu) now act on the file you clicked instead of only the active editor. Previously nothing happened when no editor was open or another file was active.

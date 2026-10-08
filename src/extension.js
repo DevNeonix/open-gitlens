@@ -5,6 +5,7 @@ const annotations = require('./annotations');
 const codelens = require('./codelens');
 const compare = require('./compare');
 const diagnose = require('./diagnose');
+const fileHistory = require('./fileHistory');
 const graph = require('./graph');
 const git = require('./git');
 const { blameLine, getUserName } = git;
@@ -185,6 +186,7 @@ async function activate(context) {
     history.register(context);
     annotations.register(context);
     compare.register(context);
+    fileHistory.register(context);
     graph.register(context);
     views.register(context);
     codelens.register(context);

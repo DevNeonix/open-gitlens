@@ -3,13 +3,16 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-/** Isolates git from the developer's global config (signing keys, hooks, identity). */
-function isolateGitEnv() {
+/**
+ * Isolates git from the developer's global config (signing keys, hooks, identity).
+ * `home: false` leaves HOME untouched: overriding it for a launched VS Code can stall its startup.
+ */
+function isolateGitEnv({ home: overrideHome = true } = {}) {
     const home = fs.mkdtempSync(path.join(os.tmpdir(), 'ogl-home-'));
+    if (overrideHome) {
+        Object.assign(process.env, { HOME: home, USERPROFILE: home, XDG_CONFIG_HOME: home });
+    }
     Object.assign(process.env, {
-        HOME: home,
-        USERPROFILE: home,
-        XDG_CONFIG_HOME: home,
         GIT_CONFIG_NOSYSTEM: '1',
         GIT_CONFIG_GLOBAL: path.join(home, '.gitconfig'),
         GIT_AUTHOR_NAME: 'Test Author',

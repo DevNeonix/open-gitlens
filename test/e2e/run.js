@@ -5,7 +5,7 @@ const { runTests } = require('@vscode/test-electron');
 
 const { createFixtureRepo, isolateGitEnv, removeDir } = require('../unit/helpers');
 
-const RUN_TIMEOUT_MS = 8 * 60 * 1000;
+const RUN_TIMEOUT_MS = Number(process.env.OGL_E2E_TIMEOUT_MS) || 8 * 60 * 1000;
 
 async function main() {
     const watchdog = setTimeout(() => {
@@ -16,12 +16,13 @@ async function main() {
     // OGL_E2E_WORKSPACE lets you run the same checks against a real repository (read-only checks).
     const customWorkspace = process.env.OGL_E2E_WORKSPACE;
     if (!customWorkspace) {
-        isolateGitEnv();
+        isolateGitEnv({ home: false });
     }
     const repo = customWorkspace || createFixtureRepo();
     const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'ogl-vscode-'));
     const resultsFile = path.join(scratch, 'results.json');
     process.env.OGL_E2E_RESULTS = resultsFile;
+    console.log(`scratch dir: ${scratch}`);
 
     const launchArgs = [
         repo,
@@ -61,7 +62,11 @@ async function main() {
         console.error('No results file was written: the suite did not run.');
         failed = true;
     }
-    removeDir(scratch);
+    if (process.env.OGL_E2E_KEEP) {
+        console.log(`kept scratch dir: ${scratch}`);
+    } else {
+        removeDir(scratch);
+    }
     if (!customWorkspace) {
         removeDir(repo);
     }

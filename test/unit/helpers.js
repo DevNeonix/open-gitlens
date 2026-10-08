@@ -35,7 +35,7 @@ function write(root, file, content) {
  */
 function createFixtureRepo() {
     const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'ogl-repo-'));
-    const root = fs.realpathSync(parent);
+    const root = fs.realpathSync.native(parent);
     git(root, 'init', '-q', '-b', 'main');
 
     write(root, 'src/app.txt', 'one\n');

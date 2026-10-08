@@ -19,7 +19,7 @@ describe('git layer', () => {
         const file = path.join(root, 'src', 'main.txt');
         const resolved = await lib.getRelativePath(file);
         assert.equal(resolved.relativePath, 'src/main.txt');
-        assert.equal(path.resolve(resolved.root), path.resolve(root));
+        assert.equal(fs.realpathSync.native(resolved.root), fs.realpathSync.native(root));
     });
 
     it('resolves relative paths even when the file path is spelled differently (symlinks)', { skip: process.platform === 'win32' }, async () => {
